@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pemetaan Guru SMP Situbondo</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS (Export MS Excel .xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark-body: #0b0f19;
+            --bg-dark-card: #151d2a;
+            --bg-dark-sidebar: #0f172a;
+            --border-color: #233148;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+        }
+
+        * {
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark-body);
+            color: var(--text-main);
+            font-size: 0.82rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Navbar */
+        .top-navbar {
+            background-color: #0f172a;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.65rem 1.25rem;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: calc(100vh - 54px);
+            width: 100%;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-dark-sidebar);
+            border-right: 1px solid var(--border-color);
+            color: var(--text-main);
+            flex-shrink: 0;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .sidebar-menu .nav-link-sb {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 0.85rem;
+            color: var(--text-muted);
+            border-radius: 0.4rem;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-menu .nav-link-sb:hover {
+            color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-menu .nav-link-sb.active {
+            color: #ffffff;
+            background-color: var(--accent-blue);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.25rem;
+            background-color: var(--bg-dark-body);
+            min-width: 0;
+        }
+
+        /* Flat Modern Cards */
+        .card-custom {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.6rem;
+        }
+
+        /* Stat Cards */
+        .stat-card {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid;
+            border-radius: 0.6rem;
+            padding: 0.85rem 1.1rem;
+        }
+        .stat-blue { border-left-color: var(--accent-blue); }
+        .stat-green { border-left-color: var(--accent-green); }
+        .stat-red { border-left-color: var(--accent-red); }
+        .stat-amber { border-left-color: var(--accent-amber); }
+
+        .stat-title {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 0.2rem;
+            color: var(--text-main);
+        }
+
+        /* Form Controls Dark */
+        .form-label-sidebar {
+            font-size: 0.73rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .form-control, .form-select {
+            background-color: #0d131f;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 0.8rem;
+            padding: 0.48rem 0.75rem;
+            border-radius: 0.4rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #0d131f;
+            border-color: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        .form-control::placeholder {
+            color: #475569;
+        }
+
+        /* Custom Dark Table */
+        .table-custom {
+            font-size: 0.78rem;
+            margin-bottom: 0;
+            width: 100%;
+            color: var(--text-main);
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-custom th {
+            background-color: #0f172a;
+            color: #cbd5e1;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+            padding: 0.75rem 0.6rem;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .table-custom td {
+            padding: 0.65rem 0.6rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-dark-card);
+            color: var(--text-main);
+        }
+
+        .table-custom tbody tr:hover td {
+            background-color: #1a2436 !important;
+        }
+
+        .school-header-cell {
+            background-color: #111827 !important;
+            border-right: 1px solid var(--border-color);
+        }
+
+        /* Status Badges */
+        .badge-status {
+            font-size: 0.7rem;
+            padding: 0.35em 0.65em;
+            font-weight: 600;
+            border-radius: 4px;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .badge-kelebihan { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-kekurangan { background-color: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge-pas { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+
+        /* Login Screen */
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #090d16;
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 2.2rem;
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+        }
+
+        /* Modal Dark */
+        .modal-content {
+            background-color: var(--bg-dark-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+        .modal-header, .modal-footer {
+            border-color: var(--border-color);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #233148;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- PANEL LOGIN -->
+<div id="viewLogin" class="login-wrapper">
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <i class="fa-solid fa-graduation-cap text-primary fs-1 mb-2"></i>
+            <h5 class="fw-bold text-white mb-1">Sistem Pemetaan Guru</h5>
+            <div class="text-muted" style="font-size: 0.78rem;">Dinas Pendidikan dan Kebudayaan Kab. Situbondo</div>
+        </div>
+
+        <div id="loginAlert" class="alert alert-danger py-2 d-none" style="font-size: 0.75rem; background-color: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: #f87171;"></div>
+
+        <form id="formLogin">
+            <div class="mb-3">
+                <label class="form-label fw-semibold text-light mb-1">Username</label>
+                <input type="text" class="form-control w-100" id="loginUsername" placeholder="Masukkan Username" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold text-light mb-1">Password</label>
+                <input type="password" class="form-control w-100" id="loginPassword" placeholder="Masukkan Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mt-2">
+                <i class="fa-solid fa-right-to-bracket me-1"></i> Masuk Ke Sistem
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- MAIN APPLICATION VIEW -->
+<div id="appMainView" class="d-none">
+    <!-- TOP BAR -->
+    <div class="top-navbar d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-primary fs-5"></i>
+            <div>
+                <div class="fw-bold text-white" style="font-size: 0.95rem;">Sistem Pemetaan Guru SMP Situbondo</div>
+                <div class="text-muted" style="font-size: 0.72rem;">Dinas Pendidikan dan Kebudayaan Kab. Situbondo</div>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-primary text-uppercase" id="navRoleBadge">ROLE</span>
+            <div class="text-white" style="font-size: 0.8rem;">
+                <i class="fa-solid fa-user-circle me-1 text-primary"></i> <span id="navUserLabel" class="fw-bold">User</span>
+            </div>
+            <button class="btn btn-sm btn-outline-light border-secondary" onclick="openModalAccount()" title="Pengaturan Akun">
+                <i class="fa-solid fa-gear me-1"></i> Ubah Akun
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="handleLogout()">
+                <i class="fa-solid fa-power-off me-1"></i> Keluar
+            </button>
+        </div>
+    </div>
+
+    <!-- PANEL ADMIN DINAS WITH SIDEBAR NAVIGATION -->
+    <div id="viewAdmin" class="app-container d-none">
+        <aside class="sidebar">
+            <div class="form-label-sidebar text-uppercase fw-bold text-primary mb-1" style="font-size: 0.7rem;">
+                <i class="fa-solid fa-compass me-1"></i> Navigasi Sistem
+            </div>
+            <ul class="sidebar-menu mb-2">
+                <li>
+                    <a class="nav-link-sb active" id="sb-kebutuhan" onclick="switchAdminTab('kebutuhan')">
+                        <i class="fa-solid fa-table-list"></i>
+                        <span>Data Kebutuhan Guru</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link-sb" id="sb-personil" onclick="switchAdminTab('personil')">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Data Detail Personil Guru</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link-sb" id="sb-grafik" onclick="switchAdminTab('grafik')">
+                        <i class="fa-solid fa-chart-column"></i>
+                        <span>Grafik Analysis</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link-sb text-success" id="sb-rekomendasi" onclick="switchAdminTab('rekomendasi')">
+                        <i class="fa-solid fa-right-left"></i>
+                        <span>Hasil Rekomendasi</span>
+                    </a>
+                </li>
+            </ul>
+
+            <hr class="border-secondary my-1">
+
+            <div class="form-label-sidebar text-uppercase fw-bold text-primary mb-1" style="font-size: 0.7rem;">
+                <i class="fa-solid fa-filter me-1"></i> Filter Data Dinas
+            </div>
+            <div class="mb-2">
+                <label class="form-label-sidebar">Filter Sekolah</label>
+                <select class="form-select form-select-sm" id="filterSMP">
+                    <option value="ALL">-- Semua Sekolah --</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label-sidebar">Filter Mata Pelajaran</label>
+                <select class="form-select form-select-sm" id="filterMapel">
+                    <option value="ALL">-- Semua Mapel --</option>
+                </select>
+            </div>
+            <button class="btn btn-sm btn-outline-secondary w-100 text-light mb-2" style="font-size: 0.72rem;" onclick="resetFilters()">
+                <i class="fa-solid fa-rotate me-1"></i> Reset Filter
+            </button>
+
+            <hr class="border-secondary my-1">
+
+            <div class="form-label-sidebar text-uppercase fw-bold text-danger mb-1" style="font-size: 0.7rem;">
+                <i class="fa-solid fa-triangle-exclamation me-1"></i> Kelola Data Dinas
+            </div>
+            <button class="btn btn-sm btn-outline-danger w-100 mb-2 fw-semibold" style="font-size: 0.72rem;" onclick="hapusSemuaData()">
+                <i class="fa-solid fa-trash-can me-1"></i> Hapus Semua Data
+            </button>
+            <button class="btn btn-sm btn-success w-100 fw-bold" style="font-size: 0.72rem;" onclick="exportToExcel()">
+                <i class="fa-solid fa-file-excel me-1"></i> Download Excel (.xlsx)
+            </button>
+
+            <div class="mt-auto p-2 rounded bg-dark border border-secondary" style="font-size: 0.68rem; color: var(--text-muted);">
+                <i class="fa-solid fa-wifi text-success me-1"></i> <strong>Realtime Sync Active</strong>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- Stat Admin Cards -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <div class="stat-card stat-blue">
+                        <div class="stat-title">Total Sekolah Terdata</div>
+                        <div class="stat-value text-blue" id="statSMP">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card stat-green">
+                        <div class="stat-title">Kasus Kelebihan Guru</div>
+                        <div class="stat-value text-success" id="statKelebihan">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card stat-red">
+                        <div class="stat-title">Kasus Kekurangan Guru</div>
+                        <div class="stat-value text-danger" id="statKekurangan">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card stat-amber">
+                        <div class="stat-title">Hasil Rekomendasi</div>
+                        <div class="stat-value text-warning" id="statRelokasi">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 1: TABEL KEBUTUHAN GURU (RINGKAS/DENGAN TOMBOL HAPUS) -->
+            <div id="viewKebutuhan" class="admin-tab-view">
+                <div class="card card-custom p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold text-white mb-0"><i class="fa-solid fa-table-list text-primary me-2"></i>Tabel Kebutuhan Guru Per Sekolah</h6>
+                        <span class="text-muted" style="font-size: 0.75rem;">Setiap mata pelajaran ditampilkan 1 baris per sekolah</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 40px;">No</th>
+                                    <th class="text-center" style="width: 60px;">Tahun</th>
+                                    <th style="min-width: 180px;">Nama Sekolah</th>
+                                    <th style="min-width: 200px;">Mata Pelajaran</th>
+                                    <th class="text-center" style="width: 80px;">Rombel</th>
+                                    <th class="text-center" style="width: 90px;">Jumlah Guru</th>
+                                    <th class="text-center" style="width: 90px;">Guru Ideal</th>
+                                    <th class="text-center" style="width: 120px;">Status Selisih</th>
+                                    <th class="text-center" style="width: 70px;">Hapus</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyGuru"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: TABEL DETAIL PERSONIL GURU (TERPISAH) -->
+            <div id="viewPersonil" class="admin-tab-view d-none">
+                <div class="card card-custom p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold text-white mb-0"><i class="fa-solid fa-id-card text-primary me-2"></i>Data Detail Personil Guru (Hasil Upload Operator)</h6>
+                        <span class="text-muted" style="font-size: 0.75rem;">Nama sekolah ditampilkan 1 kali per kelompok data sekolah</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 40px;">No</th>
+                                    <th style="min-width: 200px;">Nama Sekolah</th>
+                                    <th style="min-width: 200px;">Mata Pelajaran</th>
+                                    <th style="min-width: 200px;">Nama Guru</th>
+                                    <th style="min-width: 150px;">NIP</th>
+                                    <th style="min-width: 120px;">Gol / Pangkat</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyPersonilDetail"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: GRAFIK ANALISIS -->
+            <div id="viewGrafik" class="admin-tab-view d-none">
+                <div class="card card-custom p-3">
+                    <h6 class="fw-bold text-white mb-3"><i class="fa-solid fa-chart-bar text-primary me-2"></i>Grafik Perbandingan Kebutuhan Ideal, Kelebihan & Kekurangan Guru</h6>
+                    <div style="height: 380px; position: relative;">
+                        <canvas id="chartMapel"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 4: HASIL REKOMENDASI -->
+            <div id="viewRekomendasi" class="admin-tab-view d-none">
+                <div class="row g-3">
+                    <!-- REKOMENDASI MANUAL -->
+                    <div class="col-md-4">
+                        <div class="card card-custom p-3">
+                            <h6 class="fw-bold text-white mb-1"><i class="fa-solid fa-map-location-dot text-primary me-2"></i>Hasil Rekomendasi Manual (Jarak Terdekat)</h6>
+                            <p class="text-muted mb-3" style="font-size: 0.72rem;">Digunakan untuk pertimbangan geografis/jarak domisili guru terdekat ke sekolah tujuan.</p>
+
+                            <form id="formRekomManual">
+                                <div class="mb-2">
+                                    <label class="form-label-sidebar">Mata Pelajaran</label>
+                                    <select class="form-select form-select-sm" id="manualMapel" required></select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label-sidebar">Sekolah Asal (Pengirim Guru)</label>
+                                    <select class="form-select form-select-sm" id="manualAsal" required></select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label-sidebar">Pilih Personil Guru Dipindah</label>
+                                    <select class="form-select form-select-sm" id="manualGuruSelect" required></select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label-sidebar">Sekolah Tujuan (Penerima Guru)</label>
+                                    <select class="form-select form-select-sm" id="manualTujuan" required></select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label-sidebar">Alasan / Pertimbangan Jarak</label>
+                                    <textarea class="form-control form-control-sm" id="manualAlasan" rows="2" placeholder="Contoh: Domisili guru lebih dekat ke SMPN tujuan"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-primary w-100 fw-bold">
+                                    <i class="fa-solid fa-plus me-1"></i> Tambah Hasil Rekomendasi
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- LIST HASIL REKOMENDASI -->
+                    <div class="col-md-8">
+                        <div class="card card-custom p-3 mb-3">
+                            <h6 class="fw-bold mb-2 text-white"><i class="fa-solid fa-hand-holding-hand me-2 text-warning"></i>Hasil Rekomendasi Manual Admin (Berbasis Jarak)</h6>
+                            <div id="containerRekomManualList"></div>
+                        </div>
+
+                        <div class="card card-custom p-3">
+                            <h6 class="fw-bold mb-2 text-white"><i class="fa-solid fa-diagram-project me-2 text-primary"></i>Hasil Rekomendasi Otomatis Berbasis Personil Guru (Sistem)</h6>
+                            <div id="relokasiContainer" class="row g-2 mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- PANEL OPERATOR SEKOLAH -->
+    <div id="viewSekolah" class="container py-4 d-none">
+        <div class="row justify-content-center">
+            <div class="col-md-11">
+
+                <!-- RINGKASAN SEKOLAH -->
+                <div class="row g-3 mb-4" id="sekolahStatSummary"></div>
+
+                <div class="card card-custom p-4 mb-4">
+                    <div class="d-flex align-items-center justify-content-between border-bottom border-secondary pb-3 mb-3 flex-wrap gap-2">
+                        <div>
+                            <h5 class="fw-bold mb-0 text-white"><i class="fa-solid fa-school-flag text-primary me-2"></i>Input Data Sekolah & Personil Guru</h5>
+                            <span class="text-muted" style="font-size: 0.78rem;">Silakan isi tahun data, jumlah rombel, dan tambah nama guru sesuai mata pelajaran. Data akan otomatis terkirim ke Dinas Pendidikan.</span>
+                        </div>
+                        <span class="badge bg-success py-2 px-3"><i class="fa-solid fa-wifi me-1"></i> Realtime Sync</span>
+                    </div>
+
+                    <form id="formSekolahMandiri">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold text-light">Nama Sekolah</label>
+                                <input type="text" class="form-control" id="sekolahNama" placeholder="Contoh: SMPN 3 Besuki" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold text-light">Tahun Data (Manual)</label>
+                                <input type="number" class="form-control" id="sekolahTahun" placeholder="Contoh: 2026" min="2020" max="2035" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-light">Jumlah Rombel</label>
+                                <input type="number" class="form-control" id="sekolahRombel" min="1" max="50" placeholder="Rombel" required>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold text-primary mb-3 mt-4" style="font-size: 0.85rem;">
+                            <i class="fa-solid fa-id-card me-1"></i> TAMBAH NAMA GURU SESUAI MATA PELAJARAN:
+                        </h6>
+                        <div class="row g-3" id="containerFormMapelSekolah"></div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-4 fw-bold py-2">
+                            <i class="fa-solid fa-paper-plane me-1"></i> Simpan & Kirim Data Personil Ke Admin Dinas
+                        </button>
+                    </form>
+                </div>
+
+                <!-- TABEL HASIL REKOMENDASI DARI DINAS KE SEKOLAH -->
+                <div class="card card-custom p-4 border-warning">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="fw-bold text-white mb-0"><i class="fa-solid fa-envelope-open-text text-warning me-2"></i>Hasil Rekomendasi dari Dinas ke Sekolah</h6>
+                            <span class="text-muted" style="font-size: 0.75rem;">Status mutasi personil guru (ditambah/dikurangi) berdasarkan analisis dinas</span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 40px;">No</th>
+                                    <th style="min-width: 180px;">Nama Sekolah (Asal / Tujuan)</th>
+                                    <th style="min-width: 180px;">Mata Pelajaran</th>
+                                    <th style="min-width: 180px;">Nama Guru</th>
+                                    <th class="text-center" style="width: 120px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBodyRekomDinas"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AKUN -->
+<div class="modal fade" id="modalAccount" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title fw-bold text-white"><i class="fa-solid fa-user-gear me-2 text-primary"></i>Pengaturan Akun & Keamanan</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formChangeAccount">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-light">Username Baru</label>
+                        <input type="text" class="form-control w-100" id="accUsername" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-light">Password Baru</label>
+                        <input type="password" class="form-control w-100" id="accPassword" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-primary fw-bold">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- BOOTSTRAP 5 JS BUNDLE -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const DAFTAR_MAPEL = [
+        { name: "Pendidikan Agama dan Budi Pekerti", jam: 3 },
+        { name: "Pendidikan Pancasila", jam: 3 },
+        { name: "Bahasa Indonesia", jam: 6 },
+        { name: "Matematika", jam: 5 },
+        { name: "Ilmu Pengetahuan Alam (IPA)", jam: 5 },
+        { name: "Ilmu Pengetahuan Sosial (IPS)", jam: 4 },
+        { name: "Bahasa Inggris", jam: 4 },
+        { name: "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)", jam: 3 },
+        { name: "Informatika", jam: 2 },
+        { name: "Seni dan Prakarya", jam: 3 }
+    ];
+
+    const defaultUsers = [
+        { id: 1, username: "admin", password: "admin123", role: "ADMIN", name: "Administrator Dinas" }
+    ];
+
+    let usersList = JSON.parse(localStorage.getItem("db_users_situbondo_v2")) || defaultUsers;
+    let databaseSekolah = JSON.parse(localStorage.getItem("db_pemetaan_situbondo_v2")) || [];
+    let rekomManualList = JSON.parse(localStorage.getItem("db_rekom_manual_situbondo_v2")) || [];
+    let currentUser = JSON.parse(sessionStorage.getItem("active_user_situbondo_v2")) || null;
+    let mapelChartInstance = null;
+    let listUsulanGlobal = [];
+
+    function saveAllToStorage() {
+        localStorage.setItem("db_users_situbondo_v2", JSON.stringify(usersList));
+        localStorage.setItem("db_pemetaan_situbondo_v2", JSON.stringify(databaseSekolah));
+        localStorage.setItem("db_rekom_manual_situbondo_v2", JSON.stringify(rekomManualList));
+    }
+
+    function hitungGuruIdeal(rombel, namaMapel) {
+        const item = DAFTAR_MAPEL.find(m => m.name === namaMapel);
+        const jam = item ? item.jam : 4;
+        return Math.ceil((rombel * jam) / 24);
+    }
+
+    window.addEventListener("storage", () => {
+        databaseSekolah = JSON.parse(localStorage.getItem("db_pemetaan_situbondo_v2")) || [];
+        rekomManualList = JSON.parse(localStorage.getItem("db_rekom_manual_situbondo_v2")) || [];
+        usersList = JSON.parse(localStorage.getItem("db_users_situbondo_v2")) || [];
+        if (currentUser) refreshCurrentDashboard();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        saveAllToStorage();
+        checkActiveSession();
+
+        document.getElementById("formLogin").addEventListener("submit", handleLogin);
+        document.getElementById("filterSMP").addEventListener("change", renderMainTable);
+        document.getElementById("filterMapel").addEventListener("change", renderMainTable);
+        document.getElementById("formSekolahMandiri").addEventListener("submit", handleSekolahSubmit);
+        document.getElementById("formRekomManual").addEventListener("submit", handleAddRekomManual);
+        document.getElementById("formChangeAccount").addEventListener("submit", handleChangeAccount);
+
+        document.getElementById("manualMapel").addEventListener("change", updateManualGuruDropdown);
+        document.getElementById("manualAsal").addEventListener("change", updateManualGuruDropdown);
+    });
+
+    function handleLogin(e) {
+        e.preventDefault();
+        const userIn = document.getElementById("loginUsername").value.trim();
+        const passIn = document.getElementById("loginPassword").value.trim();
+        const alertBox = document.getElementById("loginAlert");
+
+        let found = usersList.find(u => u.username.toLowerCase() === userIn.toLowerCase() && u.password === passIn);
+
+        if (!found && passIn === "123456" && userIn.toLowerCase() !== "admin") {
+            let formattedName = userIn.toUpperCase();
+            if (formattedName.startsWith("SMPN")) formattedName = formattedName.replace("SMPN", "SMPN ");
+
+            found = {
+                id: Date.now(),
+                username: userIn,
+                password: "123456",
+                role: "SEKOLAH",
+                name: formattedName,
+                sekolahName: formattedName
+            };
+            usersList.push(found);
+            saveAllToStorage();
+        }
+
+        if (found) {
+            currentUser = found;
+            sessionStorage.setItem("active_user_situbondo_v2", JSON.stringify(currentUser));
+            alertBox.classList.add("d-none");
+            checkActiveSession();
+        } else {
+            alertBox.innerText = "Username atau password salah! (Password default sekolah baru: 123456)";
+            alertBox.classList.remove("d-none");
+        }
+    }
+
+    function handleLogout() {
+        sessionStorage.removeItem("active_user_situbondo_v2");
+        currentUser = null;
+        document.getElementById("appMainView").classList.add("d-none");
+        document.getElementById("viewLogin").classList.remove("d-none");
+        document.getElementById("loginUsername").value = "";
+        document.getElementById("loginPassword").value = "";
+    }
+
+    function checkActiveSession() {
+        if (currentUser) {
+            document.getElementById("viewLogin").classList.add("d-none");
+            document.getElementById("appMainView").classList.remove("d-none");
+
+            document.getElementById("navRoleBadge").innerText = currentUser.role;
+            document.getElementById("navUserLabel").innerText = currentUser.name;
+
+            if (currentUser.role === "ADMIN") {
+                document.getElementById("viewAdmin").classList.remove("d-none");
+                document.getElementById("viewSekolah").classList.add("d-none");
+                populateSidebarDropdowns();
+                populateManualRekomDropdowns();
+                renderMainTable();
+            } else {
+                document.getElementById("viewAdmin").classList.add("d-none");
+                document.getElementById("viewSekolah").classList.remove("d-none");
+                setupSekolahOperatorView();
+            }
+        }
+    }
+
+    function refreshCurrentDashboard() {
+        if (!currentUser) return;
+        if (currentUser.role === "ADMIN") {
+            populateSidebarDropdowns();
+            populateManualRekomDropdowns();
+            renderMainTable();
+        } else {
+            setupSekolahOperatorView();
+        }
+    }
+
+    // NAVIGASI SIDEBAR ADMIN
+    function switchAdminTab(tabName) {
+        document.querySelectorAll('.nav-link-sb').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-view').forEach(el => el.classList.add('d-none'));
+
+        if (tabName === 'kebutuhan') {
+            document.getElementById('sb-kebutuhan').classList.add('active');
+            document.getElementById('viewKebutuhan').classList.remove('d-none');
+            renderMainTable();
+        } else if (tabName === 'personil') {
+            document.getElementById('sb-personil').classList.add('active');
+            document.getElementById('viewPersonil').classList.remove('d-none');
+            renderPersonilTable();
+        } else if (tabName === 'grafik') {
+            document.getElementById('sb-grafik').classList.add('active');
+            document.getElementById('viewGrafik').classList.remove('d-none');
+            renderChartAnalisis();
+        } else if (tabName === 'rekomendasi') {
+            document.getElementById('sb-rekomendasi').classList.add('active');
+            document.getElementById('viewRekomendasi').classList.remove('d-none');
+            renderRelokasiOtomatis();
+            renderRekomManualAdmin();
+        }
+    }
+
+    // OPERATOR SEKOLAH DASHBOARD
+    function setupSekolahOperatorView() {
+        const inputNamaSekolah = document.getElementById("sekolahNama");
+        const sekolahName = currentUser.sekolahName || currentUser.name;
+        inputNamaSekolah.value = sekolahName;
+
+        let existing = databaseSekolah.find(s => s.smp.toLowerCase() === sekolahName.toLowerCase());
+        const rombelInput = document.getElementById("sekolahRombel");
+        const tahunInput = document.getElementById("sekolahTahun");
+
+        let totalGuruCount = 0;
+        if (existing) {
+            rombelInput.value = existing.rombel || "";
+            tahunInput.value = existing.tahun || new Date().getFullYear();
+            existing.mapelData.forEach(m => {
+                if (m.guruList) totalGuruCount += m.guruList.length;
+            });
+        } else {
+            rombelInput.value = "";
+            tahunInput.value = new Date().getFullYear();
+        }
+
+        // Tampilkan Data Personil, Jumlah Rombel, Jumlah Data Guru di bagian atas Operator
+        const statBox = document.getElementById("sekolahStatSummary");
+        statBox.innerHTML = `
+            <div class="col-md-4">
+                <div class="stat-card stat-blue">
+                    <div class="stat-title">Nama Sekolah</div>
+                    <div class="fw-bold text-white mt-1" style="font-size: 1.05rem;">${sekolahName}</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card stat-amber">
+                    <div class="stat-title">Jumlah Rombel</div>
+                    <div class="stat-value text-warning">${existing ? existing.rombel : 0} Rombel</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card stat-green">
+                    <div class="stat-title">Total Personil Guru</div>
+                    <div class="stat-value text-success">${totalGuruCount} Personil</div>
+                </div>
+            </div>
+        `;
+
+        renderFormSekolahMapel(existing);
+        renderRelokasiOtomatis();
+        renderTableRekomendasiSekolah(sekolahName);
+    }
+
+    function renderFormSekolahMapel(existingData) {
+        const container = document.getElementById("containerFormMapelSekolah");
+        container.innerHTML = "";
+        
+        DAFTAR_MAPEL.forEach((m, idx) => {
+            container.innerHTML += `
+                <div class="col-md-6">
+                    <div class="card card-custom p-3 border-secondary h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span style="font-size: 0.8rem;" class="fw-bold text-light">${m.name}</span>
+                            <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size: 0.7rem;" onclick="addTeacherInputRow(${idx})">
+                                <i class="fa-solid fa-plus me-1"></i> Tambah Nama Guru
+                            </button>
+                        </div>
+                        <div id="teacher-list-${idx}" class="d-flex flex-column gap-2 mt-1"></div>
+                    </div>
+                </div>
+            `;
+        });
+
+        DAFTAR_MAPEL.forEach((m, idx) => {
+            let guruList = [];
+            if (existingData) {
+                let mapelFound = existingData.mapelData.find(x => x.mapel === m.name);
+                if (mapelFound && mapelFound.guruList) guruList = mapelFound.guruList;
+            }
+            guruList.forEach(g => {
+                addTeacherInputRow(idx, g.nama, g.nip, g.gol);
+            });
+        });
+    }
+
+    function addTeacherInputRow(mapelIdx, nama = "", nip = "", gol = "") {
+        const listDiv = document.getElementById(`teacher-list-${mapelIdx}`);
+        if (!listDiv) return;
+
+        const rowId = `t-row-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        const rowHtml = `
+            <div class="row g-1 align-items-center teacher-row border-bottom border-secondary pb-1" id="${rowId}">
+                <div class="col-5">
+                    <input type="text" class="form-control form-control-sm t-nama" placeholder="Nama Guru" value="${nama}" required style="font-size: 0.73rem;">
+                </div>
+                <div class="col-4">
+                    <input type="text" class="form-control form-control-sm t-nip" placeholder="NIP" value="${nip}" style="font-size: 0.73rem;">
+                </div>
+                <div class="col-2">
+                    <input type="text" class="form-control form-control-sm t-gol" placeholder="Gol/Pkt" value="${gol}" style="font-size: 0.73rem;">
+                </div>
+                <div class="col-1 text-end">
+                    <button type="button" class="btn btn-sm btn-outline-danger border-0 p-0" onclick="document.getElementById('${rowId}').remove()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        listDiv.insertAdjacentHTML('beforeend', rowHtml);
+    }
+
+    function handleSekolahSubmit(e) {
+        e.preventDefault();
+        const nama = document.getElementById("sekolahNama").value.trim();
+        const tahun = document.getElementById("sekolahTahun").value.trim();
+        const rombel = parseInt(document.getElementById("sekolahRombel").value);
+
+        if (!nama || !tahun || isNaN(rombel)) return;
+
+        currentUser.sekolahName = nama;
+        currentUser.name = nama;
+        sessionStorage.setItem("active_user_situbondo_v2", JSON.stringify(currentUser));
+
+        let mapelArr = [];
+        DAFTAR_MAPEL.forEach((m, idx) => {
+            const listDiv = document.getElementById(`teacher-list-${idx}`);
+            const rows = listDiv.querySelectorAll(".teacher-row");
+            let guruList = [];
+
+            rows.forEach(r => {
+                const tNama = r.querySelector(".t-nama").value.trim();
+                const tNip = r.querySelector(".t-nip").value.trim();
+                const tGol = r.querySelector(".t-gol").value.trim();
+                if (tNama !== "") {
+                    guruList.push({ nama: tNama, nip: tNip, gol: tGol });
+                }
+            });
+
+            mapelArr.push({
+                mapel: m.name,
+                guruAda: guruList.length,
+                guruList: guruList
+            });
+        });
+
+        const newObj = { smp: nama, tahun: tahun, rombel: rombel, mapelData: mapelArr };
+        const idx = databaseSekolah.findIndex(s => s.smp.toLowerCase() === nama.toLowerCase());
+
+        if (idx >= 0) databaseSekolah[idx] = newObj;
+        else databaseSekolah.push(newObj);
+
+        saveAllToStorage();
+        alert(`Data ${nama} (Tahun ${tahun}) berhasil disimpan dan diperbarui!`);
+        refreshCurrentDashboard();
+    }
+
+    // DROPDOWNS
+    function populateSidebarDropdowns() {
+        const filterSMP = document.getElementById("filterSMP");
+        const filterMapel = document.getElementById("filterMapel");
+
+        filterSMP.innerHTML = `<option value="ALL">-- Semua Sekolah --</option>`;
+        databaseSekolah.forEach(s => filterSMP.innerHTML += `<option value="${s.smp}">${s.smp}</option>`);
+
+        filterMapel.innerHTML = `<option value="ALL">-- Semua Mapel --</option>`;
+        DAFTAR_MAPEL.forEach(m => filterMapel.innerHTML += `<option value="${m.name}">${m.name}</option>`);
+    }
+
+    function populateManualRekomDropdowns() {
+        const mapelSel = document.getElementById("manualMapel");
+        const asalSel = document.getElementById("manualAsal");
+        const tujuanSel = document.getElementById("manualTujuan");
+
+        if (!mapelSel || !asalSel || !tujuanSel) return;
+
+        mapelSel.innerHTML = DAFTAR_MAPEL.map(m => `<option value="${m.name}">${m.name}</option>`).join("");
+
+        if (databaseSekolah.length === 0) {
+            asalSel.innerHTML = `<option value="">-- Belum Ada Data Sekolah --</option>`;
+            tujuanSel.innerHTML = `<option value="">-- Belum Ada Data Sekolah --</option>`;
+        } else {
+            let opts = databaseSekolah.map(s => `<option value="${s.smp}">${s.smp}</option>`).join("");
+            asalSel.innerHTML = opts;
+            tujuanSel.innerHTML = opts;
+        }
+
+        updateManualGuruDropdown();
+    }
+
+    function updateManualGuruDropdown() {
+        const selectedMapel = document.getElementById("manualMapel").value;
+        const selectedAsal = document.getElementById("manualAsal").value;
+        const guruSelect = document.getElementById("manualGuruSelect");
+
+        if (!guruSelect) return;
+        guruSelect.innerHTML = "";
+
+        const sekolahObj = databaseSekolah.find(s => s.smp === selectedAsal);
+        if (sekolahObj) {
+            const mData = sekolahObj.mapelData.find(m => m.mapel === selectedMapel);
+            if (mData && mData.guruList && mData.guruList.length > 0) {
+                mData.guruList.forEach(g => {
+                    guruSelect.innerHTML += `<option value="${g.nama}|${g.nip}|${g.gol}">${g.nama} (${g.nip || '-'} - ${g.gol || '-'})</option>`;
+                });
+                return;
+            }
+        }
+        guruSelect.innerHTML = `<option value="">-- Tidak ada data personil guru --</option>`;
+    }
+
+    // 1. TABEL KEBUTUHAN GURU (RINGKAS: HANYA BERISI NO, TAHUN, NAMA SEKOLAH, MAPEL (SATU SAJA), ROMBEL, JUMLAH GURU, GURU IDEAL, STATUS SELISIH, HAPUS)
+    function renderMainTable() {
+        const filterSMPVal = document.getElementById("filterSMP").value;
+        const filterMapelVal = document.getElementById("filterMapel").value;
+        const tbody = document.getElementById("tableBodyGuru");
+
+        tbody.innerHTML = "";
+        let totalKasusKelebihan = 0;
+        let totalKasusKekurangan = 0;
+        let nomorUrut = 1;
+
+        let filteredSekolah = databaseSekolah.filter(s => filterSMPVal === "ALL" || s.smp === filterSMPVal);
+
+        if (filteredSekolah.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">Data di dinas masih kosong. Menunggu input dari Operator Sekolah.</td></tr>`;
+            document.getElementById("statSMP").innerText = "0";
+            document.getElementById("statKelebihan").innerText = "0";
+            document.getElementById("statKekurangan").innerText = "0";
+            document.getElementById("statRelokasi").innerText = "0";
+            return;
+        }
+
+        filteredSekolah.forEach(sekolahObj => {
+            let validMapel = sekolahObj.mapelData.filter(m => filterMapelVal === "ALL" || m.mapel === filterMapelVal);
+
+            if (validMapel.length > 0) {
+                const totalRowspan = validMapel.length;
+
+                validMapel.forEach((m, index) => {
+                    const guruIdeal = hitungGuruIdeal(sekolahObj.rombel, m.mapel);
+                    const selisih = m.guruAda - guruIdeal;
+
+                    let badgeStatus = "";
+                    if (selisih > 0) {
+                        badgeStatus = `<span class="badge badge-status badge-kelebihan">+${selisih} Kelebihan</span>`;
+                        totalKasusKelebihan++;
+                    } else if (selisih < 0) {
+                        badgeStatus = `<span class="badge badge-status badge-kekurangan">${selisih} Kekurangan</span>`;
+                        totalKasusKekurangan++;
+                    } else {
+                        badgeStatus = `<span class="badge badge-status badge-pas">Ideal</span>`;
+                    }
+
+                    let rowHTML = "<tr>";
+                    if (index === 0) {
+                        rowHTML += `
+                            <td class="text-center align-middle fw-bold school-header-cell" rowspan="${totalRowspan}">${nomorUrut}</td>
+                            <td class="text-center align-middle fw-bold text-warning school-header-cell" rowspan="${totalRowspan}">${sekolahObj.tahun || '-'}</td>
+                            <td class="align-middle fw-bold text-light school-header-cell" rowspan="${totalRowspan}">
+                                ${sekolahObj.smp}
+                            </td>
+                        `;
+                    }
+
+                    rowHTML += `
+                        <td class="fw-medium text-white">${m.mapel}</td>
+                        <td class="text-center fw-bold">${sekolahObj.rombel}</td>
+                        <td class="text-center fw-bold text-primary">${m.guruAda}</td>
+                        <td class="text-center text-info fw-semibold">${guruIdeal}</td>
+                        <td class="text-center">${badgeStatus}</td>
+                    `;
+
+                    if (index === 0) {
+                        rowHTML += `
+                            <td class="text-center align-middle school-header-cell" rowspan="${totalRowspan}">
+                                <button class="btn btn-sm btn-outline-danger border-0 p-1" title="Hapus Data Sekolah Ini" onclick="hapusSekolah('${sekolahObj.smp}')">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </td>
+                        `;
+                    }
+
+                    rowHTML += "</tr>";
+                    tbody.innerHTML += rowHTML;
+                });
+
+                nomorUrut++;
+            }
+        });
+
+        document.getElementById("statSMP").innerText = databaseSekolah.length;
+        document.getElementById("statKelebihan").innerText = totalKasusKelebihan;
+        document.getElementById("statKekurangan").innerText = totalKasusKekurangan;
+
+        renderRelokasiOtomatis();
+        renderRekomManualAdmin();
+        renderPersonilTable();
+    }
+
+    // 2. TABEL DATA DETAIL PERSONIL GURU (TERPISAH & NAMA SEKOLAH HANYA SATU)
+    function renderPersonilTable() {
+        const filterSMPVal = document.getElementById("filterSMP").value;
+        const filterMapelVal = document.getElementById("filterMapel").value;
+        const tbody = document.getElementById("tableBodyPersonilDetail");
+
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        let filteredSekolah = databaseSekolah.filter(s => filterSMPVal === "ALL" || s.smp === filterSMPVal);
+
+        if (filteredSekolah.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Belum ada data detail personil guru.</td></tr>`;
+            return;
+        }
+
+        let nomorUrut = 1;
+
+        filteredSekolah.forEach(sekolahObj => {
+            // Kumpulkan seluruh personil guru sesuai filter mapel
+            let allTeachersInSchool = [];
+
+            sekolahObj.mapelData.forEach(m => {
+                if (filterMapelVal === "ALL" || m.mapel === filterMapelVal) {
+                    if (m.guruList && m.guruList.length > 0) {
+                        m.guruList.forEach(g => {
+                            allTeachersInSchool.push({
+                                mapel: m.mapel,
+                                nama: g.nama,
+                                nip: g.nip,
+                                gol: g.gol
+                            });
+                        });
+                    }
+                }
+            });
+
+            if (allTeachersInSchool.length > 0) {
+                const schoolRowspan = allTeachersInSchool.length;
+
+                allTeachersInSchool.forEach((t, tIndex) => {
+                    let rowHTML = "<tr>";
+                    if (tIndex === 0) {
+                        rowHTML += `
+                            <td class="text-center align-middle fw-bold school-header-cell" rowspan="${schoolRowspan}">${nomorUrut}</td>
+                            <td class="align-middle fw-bold text-light school-header-cell" rowspan="${schoolRowspan}">
+                                ${sekolahObj.smp}
+                            </td>
+                        `;
+                    }
+
+                    rowHTML += `
+                        <td class="fw-medium text-white">${t.mapel}</td>
+                        <td class="fw-semibold text-info">${t.nama}</td>
+                        <td>${t.nip || '-'}</td>
+                        <td><span class="badge bg-secondary">${t.gol || '-'}</span></td>
+                    `;
+
+                    rowHTML += "</tr>";
+                    tbody.innerHTML += rowHTML;
+                });
+
+                nomorUrut++;
+            }
+        });
+
+        if (tbody.innerHTML === "") {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Tidak ditemukan personil guru sesuai filter.</td></tr>`;
+        }
+    }
+
+    // 3. TABEL HASIL REKOMENDASI DARI DINAS KE SEKOLAH (PADA DASHBOARD OPERATOR)
+    function renderTableRekomendasiSekolah(sekolahName) {
+        const tbody = document.getElementById("tableBodyRekomDinas");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+
+        let autoRelated = listUsulanGlobal.filter(u => u.asal.toLowerCase() === sekolahName.toLowerCase() || u.tujuan.toLowerCase() === sekolahName.toLowerCase());
+        let manualRelated = rekomManualList.filter(m => m.asal.toLowerCase() === sekolahName.toLowerCase() || m.tujuan.toLowerCase() === sekolahName.toLowerCase());
+
+        let combined = [];
+
+        manualRelated.forEach(m => {
+            let isAsal = m.asal.toLowerCase() === sekolahName.toLowerCase();
+            combined.push({
+                sekolahTarget: isAsal ? `Ke: ${m.tujuan}` : `Dari: ${m.asal}`,
+                mapel: m.mapel,
+                namaGuru: m.teacher ? `${m.teacher.nama} (${m.teacher.nip || '-'})` : "Belum ditentukan",
+                status: isAsal ? "Dikurangi" : "Ditambah",
+                type: "Manual Jarak"
+            });
+        });
+
+        autoRelated.forEach(a => {
+            let isAsal = a.asal.toLowerCase() === sekolahName.toLowerCase();
+            let teacherNames = (a.assignedTeachers && a.assignedTeachers.length > 0) 
+                ? a.assignedTeachers.map(g => g.nama).join(", ") 
+                : `${a.jumlah} Guru`;
+
+            combined.push({
+                sekolahTarget: isAsal ? `Ke: ${a.tujuan}` : `Dari: ${a.asal}`,
+                mapel: a.mapel,
+                namaGuru: teacherNames,
+                status: isAsal ? "Dikurangi" : "Ditambah",
+                type: "Otomatis"
+            });
+        });
+
+        if (combined.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-success">
+                        <i class="fa-solid fa-circle-check me-2"></i>Status Kebutuhan Ideal: Tidak ada arahan mutasi guru untuk <strong>${sekolahName}</strong>.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        combined.forEach((item, index) => {
+            let statusBadge = item.status === "Ditambah" 
+                ? `<span class="badge bg-success py-1 px-2"><i class="fa-solid fa-plus-circle me-1"></i>Ditambah</span>`
+                : `<span class="badge bg-danger py-1 px-2"><i class="fa-solid fa-minus-circle me-1"></i>Dikurangi</span>`;
+
+            tbody.innerHTML += `
+                <tr>
+                    <td class="text-center fw-bold">${index + 1}</td>
+                    <td class="fw-semibold text-white">${item.sekolahTarget}</td>
+                    <td>${item.mapel}</td>
+                    <td class="text-info fw-semibold">${item.namaGuru}</td>
+                    <td class="text-center">${statusBadge}</td>
+                </tr>
+            `;
+        });
+    }
+
+    // FUNGSI REKOMENDASI OTOMATIS
+    function renderRelokasiOtomatis() {
+        const container = document.getElementById("relokasiContainer");
+        listUsulanGlobal = [];
+
+        DAFTAR_MAPEL.forEach(mapelObj => {
+            const mapelName = mapelObj.name;
+            let mapelSekolahList = [];
+
+            databaseSekolah.forEach(s => {
+                let m = s.mapelData.find(x => x.mapel === mapelName);
+                if (m) {
+                    let ideal = hitungGuruIdeal(s.rombel, mapelName);
+                    mapelSekolahList.push({
+                        smp: s.smp,
+                        selisih: m.guruAda - ideal,
+                        guruList: m.guruList || []
+                    });
+                }
+            });
+
+            let listSurplus = mapelSekolahList.filter(d => d.selisih > 0);
+            let listDefisit = mapelSekolahList.filter(d => d.selisih < 0);
+
+            listSurplus.forEach(sItem => {
+                let sisaSurplus = sItem.selisih;
+                let guruAvailable = [...sItem.guruList];
+
+                listDefisit.forEach(dItem => {
+                    let butuhDefisit = Math.abs(dItem.selisih);
+                    if (sisaSurplus > 0 && butuhDefisit > 0) {
+                        let jumlahDipindah = Math.min(sisaSurplus, butuhDefisit);
+                        
+                        let assignedTeachers = [];
+                        for (let k = 0; k < jumlahDipindah; k++) {
+                            if (guruAvailable.length > 0) {
+                                assignedTeachers.push(guruAvailable.shift());
+                            }
+                        }
+
+                        listUsulanGlobal.push({
+                            mapel: mapelName,
+                            asal: sItem.smp,
+                            tujuan: dItem.smp,
+                            jumlah: jumlahDipindah,
+                            assignedTeachers: assignedTeachers
+                        });
+
+                        sisaSurplus -= jumlahDipindah;
+                        dItem.selisih += jumlahDipindah;
+                    }
+                });
+            });
+        });
+
+        const statRelokasiEl = document.getElementById("statRelokasi");
+        if (statRelokasiEl) statRelokasiEl.innerText = listUsulanGlobal.length + rekomManualList.length;
+
+        if (!container) return;
+        container.innerHTML = "";
+
+        if (listUsulanGlobal.length === 0) {
+            container.innerHTML = `<div class="col-12 text-center py-3 text-muted">Posisi kebutuhan guru saat ini seimbang/ideal secara otomatis.</div>`;
+            return;
+        }
+
+        listUsulanGlobal.forEach(u => {
+            let guruHtml = "";
+            if (u.assignedTeachers && u.assignedTeachers.length > 0) {
+                guruHtml = `<div class="text-light mt-2 fw-semibold" style="font-size: 0.72rem;">Personil Guru Direkomendasikan:</div><ul class="ps-3 mb-0 text-info" style="font-size: 0.72rem;">`;
+                u.assignedTeachers.forEach(g => {
+                    guruHtml += `<li><strong>${g.nama}</strong> (${g.nip || '-'} | ${g.gol || '-'})</li>`;
+                });
+                guruHtml += `</ul>`;
+            } else {
+                guruHtml = `<div class="text-muted fst-italic mt-1" style="font-size: 0.7rem;">(Belum ada data rincian personil guru)</div>`;
+            }
+
+            container.innerHTML += `
+                <div class="col-md-6">
+                    <div class="card card-custom p-3 border-start border-4 border-primary">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.73rem;">${u.mapel}</span>
+                        </div>
+                        <div class="bg-dark p-2 rounded border border-secondary" style="font-size: 0.75rem;">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-danger fw-bold"><i class="fa-solid fa-minus-circle me-1"></i>${u.asal}</span>
+                                <i class="fa-solid fa-arrow-right text-muted mx-1"></i>
+                                <span class="text-success fw-bold"><i class="fa-solid fa-plus-circle me-1"></i>${u.tujuan}</span>
+                            </div>
+                            ${guruHtml}
+                            <div class="mt-2 pt-1 border-top border-secondary text-end text-success fw-normal" style="font-size: 0.68rem;">
+                                <i class="fa-solid fa-circle-check me-1"></i>${u.jumlah} guru direkomendasikan
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // REKOMENDASI MANUAL ADMIN
+    function handleAddRekomManual(e) {
+        e.preventDefault();
+        const mapel = document.getElementById("manualMapel").value;
+        const asal = document.getElementById("manualAsal").value;
+        const tujuan = document.getElementById("manualTujuan").value;
+        const guruVal = document.getElementById("manualGuruSelect").value;
+        const alasan = document.getElementById("manualAlasan").value.trim() || "Pertimbangan jarak geografis sekolah terdekat";
+
+        if (!asal || !tujuan) {
+            alert("Silakan pastikan sekolah pengirim dan penerima sudah terpilih!");
+            return;
+        }
+
+        if (asal === tujuan) {
+            alert("Sekolah Asal dan Sekolah Tujuan tidak boleh sama!");
+            return;
+        }
+
+        let guruObj = null;
+        if (guruVal) {
+            const parts = guruVal.split("|");
+            guruObj = { nama: parts[0], nip: parts[1], gol: parts[2] };
+        }
+
+        rekomManualList.push({
+            id: Date.now(),
+            mapel, asal, tujuan, jumlah: 1, teacher: guruObj, alasan
+        });
+
+        saveAllToStorage();
+        document.getElementById("formRekomManual").reset();
+        renderMainTable();
+    }
+
+    function renderRekomManualAdmin() {
+        const container = document.getElementById("containerRekomManualList");
+        if (!container) return;
+        
+        container.innerHTML = "";
+
+        if (rekomManualList.length === 0) {
+            container.innerHTML = `<div class="text-muted" style="font-size: 0.75rem;">Belum ada rekomendasi manual berbasis jarak/personil yang ditambahkan.</div>`;
+            return;
+        }
+
+        rekomManualList.forEach(item => {
+            let guruStr = item.teacher ? `<strong>${item.teacher.nama}</strong> (${item.teacher.nip || '-'} | ${item.teacher.gol || '-'})` : "Belum memilih personil";
+
+            container.innerHTML += `
+                <div class="p-2 mb-2 border border-warning rounded bg-dark d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="fw-bold text-white" style="font-size: 0.78rem;">Mapel: ${item.mapel}</div>
+                        <div class="text-info my-1" style="font-size: 0.75rem;"><i class="fa-solid fa-user me-1"></i>Nama Guru: ${guruStr}</div>
+                        <div style="font-size: 0.75rem;">
+                            <span class="text-danger fw-bold">${item.asal}</span> 
+                            <i class="fa-solid fa-arrow-right mx-1 text-muted"></i> 
+                            <span class="text-success fw-bold">${item.tujuan}</span>
+                        </div>
+                        <div class="text-muted fst-italic" style="font-size: 0.7rem;"><i class="fa-solid fa-location-dot me-1 text-warning"></i>${item.alasan}</div>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger border-0" onclick="deleteRekomManual(${item.id})">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+        });
+    }
+
+    function deleteRekomManual(id) {
+        rekomManualList = rekomManualList.filter(x => x.id !== id);
+        saveAllToStorage();
+        renderMainTable();
+    }
+
+    // HAPUS DATA PER SEKOLAH DAN SEMUA SEKOLAH
+    function hapusSekolah(smpName) {
+        if (confirm(`Yakin ingin menghapus seluruh data sekolah ${smpName}?`)) {
+            databaseSekolah = databaseSekolah.filter(s => s.smp !== smpName);
+            saveAllToStorage();
+            populateSidebarDropdowns();
+            renderMainTable();
+        }
+    }
+
+    function hapusSemuaData() {
+        if (confirm("PERINGATAN! Anda yakin ingin menghapus SELURUH DATA sekolah di Dinas? Data yang terhapus tidak dapat dikembalikan.")) {
+            databaseSekolah = [];
+            rekomManualList = [];
+            saveAllToStorage();
+            populateSidebarDropdowns();
+            renderMainTable();
+            alert("Seluruh data dinas telah berhasil dihapus!");
+        }
+    }
+
+    // UBAH AKUN
+    function openModalAccount() {
+        if (!currentUser) return;
+        document.getElementById("accUsername").value = currentUser.username;
+        document.getElementById("accPassword").value = currentUser.password;
+        new bootstrap.Modal(document.getElementById("modalAccount")).show();
+    }
+
+    function handleChangeAccount(e) {
+        e.preventDefault();
+        const newU = document.getElementById("accUsername").value.trim();
+        const newP = document.getElementById("accPassword").value.trim();
+
+        if (!newU || !newP) return;
+
+        const idx = usersList.findIndex(u => u.id === currentUser.id);
+        if (idx >= 0) {
+            usersList[idx].username = newU;
+            usersList[idx].password = newP;
+            currentUser.username = newU;
+            currentUser.password = newP;
+
+            saveAllToStorage();
+            sessionStorage.setItem("active_user_situbondo_v2", JSON.stringify(currentUser));
+            
+            bootstrap.Modal.getInstance(document.getElementById("modalAccount")).hide();
+            alert("Username dan Password berhasil diperbarui!");
+            document.getElementById("navUserLabel").innerText = currentUser.name;
+        }
+    }
+
+    // GRAFIK ANALISIS
+    function renderChartAnalisis() {
+        const canvas = document.getElementById("chartMapel");
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d");
+        let labels = DAFTAR_MAPEL.map(m => m.name);
+        
+        let idealData = new Array(DAFTAR_MAPEL.length).fill(0);
+        let surplusData = new Array(DAFTAR_MAPEL.length).fill(0);
+        let defisitData = new Array(DAFTAR_MAPEL.length).fill(0);
+
+        databaseSekolah.forEach(s => {
+            s.mapelData.forEach(m => {
+                let mapelIdx = DAFTAR_MAPEL.findIndex(x => x.name === m.mapel);
+                if (mapelIdx !== -1) {
+                    let ideal = hitungGuruIdeal(s.rombel, m.mapel);
+                    idealData[mapelIdx] += ideal;
+                    
+                    let selisih = m.guruAda - ideal;
+                    if (selisih > 0) surplusData[mapelIdx] += selisih;
+                    if (selisih < 0) defisitData[mapelIdx] += Math.abs(selisih);
+                }
+            });
+        });
+
+        if (mapelChartInstance) {
+            mapelChartInstance.destroy();
+        }
+
+        mapelChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Kebutuhan Ideal',
+                        data: idealData,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Total Kelebihan (Surplus)',
+                        data: surplusData,
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Total Kekurangan (Defisit)',
+                        data: defisitData,
+                        backgroundColor: '#ef4444',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        ticks: { color: '#94a3b8', font: { size: 10 } },
+                        grid: { color: '#233148' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#94a3b8', stepSize: 1 },
+                        grid: { color: '#233148' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#f1f5f9', font: { family: 'Plus Jakarta Sans' } }
+                    }
+                }
+            }
+        });
+    }
+
+    // EXPORT EXCEL
+    function exportToExcel() {
+        if (databaseSekolah.length === 0) {
+            alert("Data di dinas masih kosong!");
+            return;
+        }
+
+        let dataExcel = [];
+        let no = 1;
+
+        databaseSekolah.forEach(sekolahObj => {
+            sekolahObj.mapelData.forEach(m => {
+                let ideal = hitungGuruIdeal(sekolahObj.rombel, m.mapel);
+                let selisih = m.guruAda - ideal;
+                let statusText = selisih > 0 ? `Kelebihan +${selisih}` : (selisih < 0 ? `Kekurangan ${selisih}` : "Ideal");
+
+                let namaStr = (m.guruList && m.guruList.length > 0) ? m.guruList.map(g => g.nama).join(", ") : "-";
+                let nipStr = (m.guruList && m.guruList.length > 0) ? m.guruList.map(g => g.nip || "-").join(", ") : "-";
+                let golStr = (m.guruList && m.guruList.length > 0) ? m.guruList.map(g => g.gol || "-").join(", ") : "-";
+
+                dataExcel.push({
+                    "No": no,
+                    "Tahun": sekolahObj.tahun || "-",
+                    "Nama Sekolah": sekolahObj.smp,
+                    "Mata Pelajaran": m.mapel,
+                    "Jumlah Rombel": sekolahObj.rombel,
+                    "Jml Guru Ada": m.guruAda,
+                    "Nama Guru": namaStr,
+                    "NIP": nipStr,
+                    "Gol / Pangkat": golStr,
+                    "Guru Ideal": ideal,
+                    "Status Selisih": statusText
+                });
+            });
+            no++;
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(dataExcel);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Pemetaan Guru SMP");
+
+        XLSX.writeFile(workbook, "Hasil_Rekomendasi_Pemetaan_Guru_Situbondo.xlsx");
+    }
+
+    function resetFilters() {
+        document.getElementById("filterSMP").value = "ALL";
+        document.getElementById("filterMapel").value = "ALL";
+        renderMainTable();
+    }
+</script>
+</body>
+</html>
