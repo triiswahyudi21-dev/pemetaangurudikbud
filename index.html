@@ -29,7 +29,7 @@
             --accent-amber: #f59e0b;
         }
 
-        /* Tanpa Bayangan / Shadow Sesuai Desain Clean Minimalis */
+        /* Tanpa Bayangan / Flat Design */
         * {
             box-shadow: none !important;
             text-shadow: none !important;
@@ -42,14 +42,15 @@
             font-size: 0.8rem;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
-        /* Top Navbar */
+        /* Top Navbar Clean */
         .top-navbar {
             background-color: #0f172a;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 0.6rem 1.25rem;
+            padding: 0.6rem 1rem;
             position: sticky;
             top: 0;
             z-index: 1020;
@@ -61,9 +62,9 @@
             width: 100%;
         }
 
-        /* Sidebar Navigation */
+        /* Sidebar Navigation Dark */
         .sidebar {
-            width: 270px;
+            width: 260px;
             background-color: var(--bg-dark-sidebar);
             border-right: 1px solid var(--border-color);
             color: var(--text-main);
@@ -115,23 +116,23 @@
             min-width: 0;
         }
 
-        /* Card Custom */
+        /* Card Modern Minimalis */
         .card-custom {
             background: var(--bg-dark-card);
             border: 1px solid var(--border-color);
             border-radius: 0.5rem;
         }
 
-        /* Stat Cards Flat & Seragam Ukurannya */
+        /* Stat Cards Flat, Minimalis & Ukuran Seragam */
         .stat-card-mini {
             background: var(--bg-dark-card);
             border: 1px solid var(--border-color);
             border-radius: 0.5rem;
-            padding: 0.7rem 0.85rem;
+            padding: 0.65rem 0.85rem;
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
         }
 
         .stat-card-mini .stat-header {
@@ -143,7 +144,8 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.4px;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
+            white-space: nowrap;
         }
 
         .stat-card-mini .stat-number {
@@ -151,15 +153,7 @@
             font-weight: 700;
             line-height: 1.2;
             color: var(--text-main);
-        }
-
-        .stat-card-mini .stat-subtext {
-            font-size: 0.65rem;
-            color: var(--text-muted);
-            margin-top: 0.2rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            word-break: break-word;
         }
 
         /* Form Controls Dark */
@@ -253,19 +247,19 @@
             align-items: center;
             justify-content: center;
             background: #090d16;
-            padding: 1.5rem;
+            padding: 1rem;
         }
 
         .login-card {
             width: 100%;
             max-width: 390px;
-            padding: 2rem;
+            padding: 1.75rem;
             background: var(--bg-dark-card);
             border: 1px solid var(--border-color);
             border-radius: 0.65rem;
         }
 
-        /* Modals Dark */
+        /* Modals Dark Flat */
         .modal-content {
             background-color: var(--bg-dark-card);
             border: 1px solid var(--border-color);
@@ -293,6 +287,47 @@
         ::-webkit-scrollbar-thumb {
             background: #233148;
             border-radius: 3px;
+        }
+
+        /* RESPONSIVE LAYOUT UNTUK HP (MOBILE FRIENDLY) */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 0.8rem;
+                gap: 0.75rem;
+            }
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 0.4rem;
+            }
+            .main-content {
+                padding: 0.8rem;
+            }
+            .top-navbar {
+                padding: 0.5rem 0.75rem;
+            }
+            .stat-card-mini {
+                padding: 0.55rem 0.65rem;
+            }
+            .stat-card-mini .stat-number {
+                font-size: 1.05rem;
+            }
+            .stat-card-mini .stat-header {
+                font-size: 0.62rem;
+            }
+            .table-custom th, .table-custom td {
+                padding: 0.45rem 0.35rem;
+                font-size: 0.72rem;
+            }
+            .btn {
+                font-size: 0.72rem !important;
+            }
         }
     </style>
 </head>
@@ -332,17 +367,17 @@
 <!-- MAIN APPLICATION VIEW -->
 <div id="appMainView" class="d-none">
     <!-- TOP BAR -->
-    <div class="top-navbar d-flex justify-content-between align-items-center">
+    <div class="top-navbar d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div class="d-flex align-items-center gap-2">
             <i class="fa-solid fa-graduation-cap text-primary fs-5"></i>
             <div>
-                <div class="fw-bold text-white" style="font-size: 0.88rem;">Sistem Pemetaan Guru SMP Situbondo</div>
-                <div class="text-muted" style="font-size: 0.68rem;">Dinas Pendidikan dan Kebudayaan Kab. Situbondo</div>
+                <div class="fw-bold text-white" style="font-size: 0.85rem;">Sistem Pemetaan Guru SMP Situbondo</div>
+                <div class="text-muted" style="font-size: 0.65rem;">Dinas Pendidikan dan Kebudayaan Kab. Situbondo</div>
             </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-primary text-uppercase" id="navRoleBadge" style="font-size: 0.65rem;">ROLE</span>
-            <div class="text-white me-2" style="font-size: 0.78rem;">
+        <div class="d-flex align-items-center gap-2 ms-auto">
+            <span class="badge bg-primary text-uppercase" id="navRoleBadge" style="font-size: 0.62rem;">ROLE</span>
+            <div class="text-white d-none d-sm-block" style="font-size: 0.75rem;">
                 <i class="fa-solid fa-user-circle me-1 text-primary"></i> <span id="navUserLabel" class="fw-bold">User</span>
             </div>
             <button class="btn btn-xs btn-outline-light border-secondary icon-align py-1 px-2" style="font-size: 0.72rem;" onclick="openModalAccount()" title="Pengaturan Akun">
@@ -357,32 +392,32 @@
     <!-- PANEL ADMIN DINAS (WITH SIDEBAR) -->
     <div id="viewAdmin" class="app-container d-none">
         <aside class="sidebar">
-            <!-- Navigasi -->
+            <!-- Sidebar Navigation Buttons -->
             <div>
-                <div class="form-label-sidebar text-uppercase fw-bold text-primary mb-2" style="font-size: 0.68rem;">
+                <div class="form-label-sidebar text-uppercase fw-bold text-primary mb-2" style="font-size: 0.65rem;">
                     <i class="fa-solid fa-compass me-1 fa-sm"></i> Navigasi Utama
                 </div>
                 <div class="sidebar-nav">
                     <button class="nav-item-btn active" id="btnNavKebutuhan" onclick="switchSidebarSection('kebutuhan')">
-                        <i class="fa-solid fa-table me-1 fa-sm"></i> Data Kebutuhan Guru
+                        <i class="fa-solid fa-table me-1 fa-sm"></i> Data Kebutuhan
                     </button>
                     <button class="nav-item-btn" id="btnNavPersonil" onclick="switchSidebarSection('personil')">
-                        <i class="fa-solid fa-id-card me-1 fa-sm"></i> Detail Personil Guru
+                        <i class="fa-solid fa-id-card me-1 fa-sm"></i> Detail Personil
                     </button>
                     <button class="nav-item-btn" id="btnNavGrafik" onclick="switchSidebarSection('grafik')">
                         <i class="fa-solid fa-chart-column me-1 fa-sm"></i> Grafik Analisis
                     </button>
                     <button class="nav-item-btn" id="btnNavRekomendasi" onclick="switchSidebarSection('rekomendasi')">
-                        <i class="fa-solid fa-right-left me-1 fa-sm"></i> Hasil Rekomendasi
+                        <i class="fa-solid fa-right-left me-1 fa-sm"></i> Rekomendasi
                     </button>
                 </div>
             </div>
 
             <hr class="border-secondary my-1">
 
-            <!-- Filter -->
+            <!-- Sidebar Filters -->
             <div>
-                <div class="form-label-sidebar text-uppercase fw-bold text-primary mb-2" style="font-size: 0.68rem;">
+                <div class="form-label-sidebar text-uppercase fw-bold text-primary mb-2" style="font-size: 0.65rem;">
                     <i class="fa-solid fa-filter me-1 fa-sm"></i> Filter Data Dinas
                 </div>
                 <div class="mb-2">
@@ -404,9 +439,9 @@
 
             <hr class="border-secondary my-1">
 
-            <!-- Tindakan Dinas -->
+            <!-- Action Buttons -->
             <div>
-                <div class="form-label-sidebar text-uppercase fw-bold text-danger mb-2" style="font-size: 0.68rem;">
+                <div class="form-label-sidebar text-uppercase fw-bold text-danger mb-2" style="font-size: 0.65rem;">
                     <i class="fa-solid fa-triangle-exclamation me-1 fa-sm"></i> Kelola Data Dinas
                 </div>
                 <button class="btn btn-sm btn-success fw-bold w-100 mb-2 icon-align justify-content-center" style="font-size: 0.72rem;" onclick="exportToExcel()">
@@ -417,14 +452,14 @@
                 </button>
             </div>
 
-            <div class="mt-auto p-2 rounded bg-dark border border-secondary" style="font-size: 0.68rem; color: var(--text-muted);">
-                <i class="fa-solid fa-wifi text-success me-1 fa-sm"></i> <strong>Realtime Sync:</strong> Terhubung otomatis dengan input operator sekolah.
+            <div class="mt-auto p-2 rounded bg-dark border border-secondary" style="font-size: 0.65rem; color: var(--text-muted);">
+                <i class="fa-solid fa-wifi text-success me-1 fa-sm"></i> <strong>Realtime Sync Kemendikbud:</strong> Data terupdate otomatis.
             </div>
         </aside>
 
         <main class="main-content">
-            <!-- Stat Admin Minimalis -->
-            <div class="row g-2 mb-3 align-items-stretch">
+            <!-- Stat Admin Minimalis & Ukuran Seragam -->
+            <div class="row g-2 mb-3">
                 <div class="col-6 col-md-3">
                     <div class="stat-card-mini border-start border-3 border-primary">
                         <div class="stat-header">
@@ -432,7 +467,6 @@
                             <i class="fa-solid fa-school text-primary fa-sm"></i>
                         </div>
                         <div class="stat-number text-white" id="statSMP">0</div>
-                        <div class="stat-subtext">SMP Terdata</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -442,7 +476,6 @@
                             <i class="fa-solid fa-user-plus text-success fa-sm"></i>
                         </div>
                         <div class="stat-number text-success" id="statKelebihan">0</div>
-                        <div class="stat-subtext">Kasus Kelebihan</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -452,7 +485,6 @@
                             <i class="fa-solid fa-user-minus text-danger fa-sm"></i>
                         </div>
                         <div class="stat-number text-danger" id="statKekurangan">0</div>
-                        <div class="stat-subtext">Kasus Kekurangan</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -462,7 +494,6 @@
                             <i class="fa-solid fa-right-left text-warning fa-sm"></i>
                         </div>
                         <div class="stat-number text-warning" id="statRelokasi">0</div>
-                        <div class="stat-subtext">Usulan Relokasi</div>
                     </div>
                 </div>
             </div>
@@ -470,9 +501,9 @@
             <!-- SECTION 1: DATA KEBUTUHAN GURU -->
             <div id="sectionKebutuhan" class="admin-section">
                 <div class="card card-custom p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                         <h6 class="fw-bold text-white mb-0 icon-align" style="font-size: 0.82rem;">
-                            <i class="fa-solid fa-table me-1 text-primary fa-sm"></i> Data Kebutuhan Guru Per Sekolah & Mapel
+                            <i class="fa-solid fa-table me-1 text-primary fa-sm"></i> Data Kebutuhan Guru Per Sekolah & Mapel (Standar Kemendikbud)
                         </h6>
                     </div>
                     <div class="table-responsive">
@@ -486,7 +517,7 @@
                                     <th class="text-center" style="width: 85px;">Guru Ada</th>
                                     <th class="text-center" style="width: 85px;">Guru Ideal</th>
                                     <th class="text-center" style="width: 110px;">Status Selisih</th>
-                                    <th class="text-center" style="width: 110px;">Aksi Sekolah</th>
+                                    <th class="text-center" style="width: 110px;">Aksi Admin</th>
                                 </tr>
                             </thead>
                             <tbody id="tableBodyKebutuhan"></tbody>
@@ -527,7 +558,7 @@
                     <h6 class="fw-bold text-white mb-3 icon-align" style="font-size: 0.82rem;">
                         <i class="fa-solid fa-chart-bar text-primary me-1 fa-sm"></i> Grafik Perbandingan Kebutuhan Ideal, Kelebihan & Kekurangan Guru
                     </h6>
-                    <div style="height: 380px; position: relative;">
+                    <div style="height: 350px; position: relative;">
                         <canvas id="chartMapel"></canvas>
                     </div>
                 </div>
@@ -598,16 +629,15 @@
         <div class="row justify-content-center">
             <div class="col-md-11">
 
-                <!-- KOTAK STATISTIK OPERATOR SEKOLAH (DISAMAKAN UKURANNYA) -->
-                <div class="row g-2 mb-3 align-items-stretch">
+                <!-- KOTAK STATISTIK OPERATOR SEKOLAH UNIFORM & SERAGAM -->
+                <div class="row g-2 mb-3">
                     <div class="col-6 col-md-3">
                         <div class="stat-card-mini border-start border-3 border-primary">
                             <div class="stat-header">
                                 <span>Nama Sekolah</span>
                                 <i class="fa-solid fa-building-columns text-primary fa-sm"></i>
                             </div>
-                            <div class="stat-number text-truncate text-white" style="font-size: 1.1rem;" id="opStatNamaSekolah">-</div>
-                            <div class="stat-subtext">Terdaftar di Sistem</div>
+                            <div class="stat-number text-truncate text-white" style="font-size: 0.92rem;" id="opStatNamaSekolah">-</div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
@@ -617,7 +647,6 @@
                                 <i class="fa-solid fa-door-open text-info fa-sm"></i>
                             </div>
                             <div class="stat-number text-info" id="opStatRombel">0</div>
-                            <div class="stat-subtext">Rombongan Belajar</div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
@@ -627,7 +656,6 @@
                                 <i class="fa-solid fa-users text-success fa-sm"></i>
                             </div>
                             <div class="stat-number text-success" id="opStatSiswa">0</div>
-                            <div class="stat-subtext">Standar Kemendikbud</div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
@@ -637,7 +665,6 @@
                                 <i class="fa-solid fa-user-tie text-warning fa-sm"></i>
                             </div>
                             <div class="stat-number text-warning" id="opStatTotalGuru">0</div>
-                            <div class="stat-subtext">Total Personil</div>
                         </div>
                     </div>
                 </div>
@@ -647,51 +674,51 @@
                     <div class="d-flex align-items-center justify-content-between border-bottom border-secondary pb-2 mb-3 flex-wrap gap-2">
                         <div>
                             <h6 class="fw-bold mb-1 text-white icon-align" style="font-size: 0.85rem;">
-                                <i class="fa-solid fa-school-flag text-primary fa-sm"></i> Input Data Sekolah & Personil Guru
+                                <i class="fa-solid fa-school-flag text-primary fa-sm"></i> Input Data Sekolah & Personil Guru (Kemendikbud)
                             </h6>
-                            <span class="text-muted" style="font-size: 0.74rem;">Masukkan jumlah guru atau gunakan fitur Copy-Paste Excel untuk pengisian cepat.</span>
+                            <span class="text-muted" style="font-size: 0.72rem;">Masukkan jumlah guru atau gunakan Copy-Paste Excel untuk pengisian kilat.</span>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
                             <button type="button" class="btn btn-sm btn-outline-info icon-align py-1 px-2" style="font-size: 0.73rem;" onclick="openModalCopyPaste()">
-                                <i class="fa-solid fa-paste fa-sm"></i> Input Cepat (Copy-Paste Excel)
+                                <i class="fa-solid fa-paste fa-sm"></i> Copy-Paste Excel
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-success icon-align py-1 px-2" style="font-size: 0.73rem;" onclick="exportPerSekolah(currentUser.sekolahName)">
-                                <i class="fa-solid fa-file-excel fa-sm"></i> Download Laporan (.xlsx)
+                                <i class="fa-solid fa-file-excel fa-sm"></i> Download (.xlsx)
                             </button>
                         </div>
                     </div>
 
                     <form id="formSekolahMandiri">
                         <div class="row g-2 mb-3">
-                            <div class="col-md-4">
+                            <div class="col-12 col-md-4">
                                 <label class="form-label-sidebar">
                                     <i class="fa-solid fa-school text-primary fa-sm"></i> Nama Sekolah
                                 </label>
                                 <input type="text" class="form-control" id="sekolahNama" placeholder="Contoh: SMPN 3 Besuki" required readonly>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-6 col-md-2">
                                 <label class="form-label-sidebar">
-                                    <i class="fa-solid fa-calendar text-primary fa-sm"></i> Tahun Data
+                                    <i class="fa-solid fa-calendar text-primary fa-sm"></i> Tahun
                                 </label>
                                 <input type="number" class="form-control" id="sekolahTahun" placeholder="2026" min="2020" max="2035" required>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label class="form-label-sidebar">
                                     <i class="fa-solid fa-door-open text-info fa-sm"></i> Jumlah Rombel
                                 </label>
                                 <input type="number" class="form-control" id="sekolahRombel" min="1" max="50" placeholder="Rombel" required oninput="calculateAutoSiswa()">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-12 col-md-3">
                                 <label class="form-label-sidebar">
-                                    <i class="fa-solid fa-users text-success fa-sm"></i> Jumlah Siswa (Kemendikbud)
+                                    <i class="fa-solid fa-users text-success fa-sm"></i> Jml Siswa (Kemendikbud)
                                 </label>
-                                <input type="number" class="form-control" id="sekolahSiswa" min="0" placeholder="Terhitung Otomatis" required>
+                                <input type="number" class="form-control" id="sekolahSiswa" min="0" placeholder="Otomatis Kemendikbud" required>
                             </div>
                         </div>
 
-                        <div class="p-2 mb-3 bg-dark rounded border border-secondary text-info d-flex align-items-center gap-2" style="font-size: 0.72rem;">
+                        <div class="p-2 mb-3 bg-dark rounded border border-secondary text-info d-flex align-items-center gap-2" style="font-size: 0.7rem;">
                             <i class="fa-solid fa-circle-info text-info fa-sm"></i>
-                            <span><strong>Ketentuan Kemendikbud:</strong> 1 Rombel SMP = 32 Siswa. Perhitungan Guru BK otomatis 1 guru per 5 Rombel (150 siswa).</span>
+                            <span><strong>Rasio Kemendikbud:</strong> 32 siswa/rombel, & Guru BK berasio 1 per 5 Rombel (150 siswa).</span>
                         </div>
 
                         <div class="d-flex justify-content-between align-items-center mb-2 mt-3">
@@ -713,7 +740,7 @@
                     <h6 class="fw-bold text-white mb-1 icon-align" style="font-size: 0.82rem;">
                         <i class="fa-solid fa-envelope-open-text text-warning me-1 fa-sm"></i> Hasil Rekomendasi dari Dinas Pendidikan
                     </h6>
-                    <p class="text-muted mb-2" style="font-size: 0.73rem;">Daftar arahan penambahan atau pengurangan personil guru untuk sekolah Anda.</p>
+                    <p class="text-muted mb-2" style="font-size: 0.72rem;">Daftar arahan penambahan atau pengurangan personil guru untuk sekolah Anda.</p>
                     
                     <div class="table-responsive">
                         <table class="table table-custom align-middle">
@@ -748,7 +775,7 @@
             </div>
             <div class="modal-body">
                 <p class="text-muted mb-2" style="font-size: 0.74rem;">
-                    Copy tabel guru Anda di Microsoft Excel, lalu tempelkan (paste) di kotak berikut.
+                    Copy tabel guru Anda di Microsoft Excel atau Word, lalu tempelkan (paste) di kotak berikut.
                 </p>
                 <div class="p-2 mb-2 bg-dark rounded border border-secondary text-light" style="font-size: 0.7rem;">
                     <strong>Format Urutan Kolom Excel:</strong><br>
@@ -802,7 +829,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // DAFTAR MAPEL DENGAN PERHITUNGAN KEMENDIKBUD
+    // DAFTAR MAPEL KURIKULUM KEMENDIKBUD
     const DAFTAR_MAPEL = [
         { name: "Pendidikan Agama dan Budi Pekerti", jam: 3 },
         { name: "Pendidikan Pancasila", jam: 3 },
@@ -835,7 +862,7 @@
         localStorage.setItem("db_rekom_manual_situbondo_v3", JSON.stringify(rekomManualList));
     }
 
-    // HITUNG GURU IDEAL KEMENDIKBUD (GURU BK MINIMAL 1 PER 5 ROMBEL / 150 SISWA)
+    // HITUNG GURU IDEAL KEMENDIKBUD (GURU BK MINIMAL 5 ROMBEL / 150 SISWA)
     function hitungGuruIdeal(rombel, namaMapel) {
         if (!rombel || rombel <= 0) return 0;
         const item = DAFTAR_MAPEL.find(m => m.name === namaMapel);
@@ -847,7 +874,7 @@
         return Math.ceil((rombel * item.jam) / 24);
     }
 
-    // OTOMATIS HITUNG SISWA DARI KEMENDIKBUD (Rasio Standar 32 Siswa / Rombel SMP)
+    // OTOMATIS HITUNG SISWA DARI KEMENDIKBUD (Rasio Standard 32 Siswa / Rombel)
     function calculateAutoSiswa() {
         const rombelVal = parseInt(document.getElementById("sekolahRombel").value) || 0;
         const siswaInput = document.getElementById("sekolahSiswa");
@@ -957,7 +984,7 @@
         }
     }
 
-    // NAVIGASI SIDEBAR ADMIN
+    // SWITCH SECTION DI ADMIN
     function switchSidebarSection(sectionName) {
         document.querySelectorAll(".admin-section").forEach(sec => sec.classList.add("d-none"));
         document.querySelectorAll(".sidebar-nav .nav-item-btn").forEach(btn => btn.classList.remove("active"));
@@ -999,7 +1026,7 @@
         tahunInput.value = existing ? existing.tahun : new Date().getFullYear();
         siswaInput.value = currentSiswa;
 
-        // Stat Operator Disamakan Presisi
+        // Stat Operator Minimalis & Seragam
         document.getElementById("opStatNamaSekolah").innerText = sekolahName;
         document.getElementById("opStatRombel").innerText = currentRombel;
         document.getElementById("opStatSiswa").innerText = currentSiswa;
@@ -1029,7 +1056,7 @@
             }
 
             container.innerHTML += `
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="card card-custom p-2 border-secondary h-100">
                         <div class="d-flex justify-content-between align-items-center mb-1 flex-wrap gap-1">
                             <span style="font-size: 0.78rem;" class="fw-bold text-light">${m.name}</span>
@@ -1039,7 +1066,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-between align-items-center border-top border-secondary pt-1 mt-1">
-                            <span class="text-muted" style="font-size:0.67rem;">Rincian Nama Guru (Opsional):</span>
+                            <span class="text-muted" style="font-size:0.67rem;">Rincian Nama Guru:</span>
                             <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 icon-align" style="font-size: 0.67rem;" onclick="addTeacherInputRow(${idx})">
                                 <i class="fa-solid fa-plus fa-sm"></i> Tambah
                             </button>
@@ -1100,7 +1127,7 @@
         listDiv.insertAdjacentHTML('beforeend', rowHtml);
     }
 
-    // MODAL & COPY PASTE EXCEL
+    // MODAL & FUNGSI COPY PASTE EXCEL
     function openModalCopyPaste() {
         document.getElementById("pasteInputTextarea").value = "";
         new bootstrap.Modal(document.getElementById("modalCopyPaste")).show();
@@ -1228,7 +1255,7 @@
         else databaseSekolah.push(newObj);
 
         saveAllToStorage();
-        alert(`Data ${nama} (Tahun ${tahun}) berhasil tersimpan & terkirim ke Admin Dinas Pendidikan!`);
+        alert(`Data ${nama} (Tahun ${tahun}) berhasil tersimpan & terkirim ke Admin Dinas!`);
         refreshCurrentDashboard();
     }
 
@@ -1291,7 +1318,7 @@
         renderDetailPersonilTable();
     }
 
-    // TABEL 1: DATA KEBUTUHAN GURU + AKSI HAPUS PER SEKOLAH
+    // 1. TABEL DATA KEBUTUHAN GURU (DENGAN AKSI HAPUS PER SEKOLAH)
     function renderKebutuhanTable() {
         const filterSMPVal = document.getElementById("filterSMP").value;
         const filterMapelVal = document.getElementById("filterMapel").value;
@@ -1341,7 +1368,7 @@
                             <td class="text-center align-middle fw-bold school-header-cell" rowspan="${totalRowspan}">${nomorUrut}</td>
                             <td class="align-middle fw-bold text-light school-header-cell" rowspan="${totalRowspan}">
                                 ${sekolahObj.smp}
-                                <div class="text-muted fw-normal" style="font-size: 0.68rem;">Tahun ${sekolahObj.tahun || '-'} | ${sekolahObj.siswa || sekolahObj.rombel * 32} Siswa</div>
+                                <div class="text-muted fw-normal" style="font-size: 0.68rem;">Thn ${sekolahObj.tahun || '-'} | ${sekolahObj.siswa || sekolahObj.rombel * 32} Siswa</div>
                             </td>
                             <td class="text-center align-middle fw-bold school-header-cell text-info" rowspan="${totalRowspan}">${sekolahObj.rombel}</td>
                         `;
@@ -1357,12 +1384,12 @@
                     if (index === 0) {
                         rowHTML += `
                             <td class="text-center align-middle school-header-cell" rowspan="${totalRowspan}">
-                                <div class="d-flex align-items-center justify-content-center gap-1">
-                                    <button class="btn btn-xs btn-outline-success p-1 icon-align" title="Download Excel Sekolah Ini" onclick="exportPerSekolah('${sekolahObj.smp}')">
+                                <div class="d-flex align-items-center justify-content-center gap-1 flex-wrap">
+                                    <button class="btn btn-xs btn-outline-success p-1 icon-align" title="Download Excel" onclick="exportPerSekolah('${sekolahObj.smp}')">
                                         <i class="fa-solid fa-file-excel fa-sm"></i>
                                     </button>
-                                    <button class="btn btn-xs btn-outline-danger p-1 icon-align" title="Hapus Data Sekolah Ini" onclick="hapusSekolah('${sekolahObj.smp}')">
-                                        <i class="fa-solid fa-trash-can fa-sm"></i>
+                                    <button class="btn btn-xs btn-outline-danger p-1 icon-align" title="Hapus Sekolah Ini" onclick="hapusSekolah('${sekolahObj.smp}')">
+                                        <i class="fa-solid fa-trash-can fa-sm"></i> Hapus
                                     </button>
                                 </div>
                             </td>
@@ -1385,7 +1412,7 @@
         renderRekomManualAdmin();
     }
 
-    // TABEL 2: DETAIL PERSONIL GURU
+    // 2. TABEL DATA DETAIL PERSONIL GURU
     function renderDetailPersonilTable() {
         const filterSMPVal = document.getElementById("filterSMP").value;
         const filterMapelVal = document.getElementById("filterMapel").value;
@@ -1451,7 +1478,7 @@
         });
     }
 
-    // REKOMENDASI OTOMATIS
+    // FUNGSI PERHITUNGAN REKOMENDASI OTOMATIS
     function renderRelokasiOtomatis() {
         const container = document.getElementById("relokasiContainer");
         if (!container) return;
@@ -1530,7 +1557,7 @@
             }
 
             container.innerHTML += `
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                     <div class="card card-custom p-2 border-start border-3 border-primary">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.7rem;">${u.mapel}</span>
@@ -1627,7 +1654,7 @@
         renderMainTables();
     }
 
-    // TABEL REKOMENDASI OPERATOR
+    // HASIL REKOMENDASI TABEL DI OPERATOR SEKOLAH
     function renderRekomendasiTabelSekolah(sekolahName) {
         const tbody = document.getElementById("tableBodyRekomSekolah");
         if (!tbody) return;
@@ -1796,7 +1823,7 @@
         });
     }
 
-    // EXPORT EXCEL
+    // EXPORT MS EXCEL
     function exportToExcel() {
         if (databaseSekolah.length === 0) {
             alert("Data di dinas masih kosong!");
@@ -1858,32 +1885,30 @@
         XLSX.writeFile(workbook, filename);
     }
 
-    // HAPUS SATU SEKOLAH SPESIFIK (DI ADMIN)
+    // HAPUS PER SEKOLAH (FITUR ADMIN)
     function hapusSekolah(smpName) {
-        if (confirm(`Apakah Anda yakin ingin menghapus data ${smpName}?`)) {
-            databaseSekolah = databaseSekolah.filter(s => s.smp.toLowerCase() !== smpName.toLowerCase());
-            rekomManualList = rekomManualList.filter(r => r.asal.toLowerCase() !== smpName.toLowerCase() && r.tujuan.toLowerCase() !== smpName.toLowerCase());
+        if (confirm(`Apakah Anda yakin ingin menghapus data ${smpName} dari database Dinas?`)) {
+            databaseSekolah = databaseSekolah.filter(s => s.smp !== smpName);
+            rekomManualList = rekomManualList.filter(r => r.asal !== smpName && r.tujuan !== smpName);
             saveAllToStorage();
             populateSidebarDropdowns();
-            populateManualRekomDropdowns();
             renderMainTables();
             alert(`Data ${smpName} berhasil dihapus.`);
         }
     }
 
-    // HAPUS SEMUA DATA SEKOLAH (DI ADMIN)
+    // HAPUS SEMUA DATA SEKOLAH
     function hapusSemuaSekolah() {
         if (databaseSekolah.length === 0) {
             alert("Belum ada data sekolah yang tersimpan.");
             return;
         }
 
-        if (confirm("PERINGATAN: Apakah Anda yakin ingin menghapus SELURUH data sekolah di Dinas Pendidikan?")) {
+        if (confirm("PERINGATAN: Apakah Anda yakin ingin menghapus SELURUH data sekolah yang ada di Dinas Pendidikan? Data yang dihapus tidak dapat dikembalikan.")) {
             databaseSekolah = [];
             rekomManualList = [];
             saveAllToStorage();
             populateSidebarDropdowns();
-            populateManualRekomDropdowns();
             renderMainTables();
             alert("Seluruh data sekolah berhasil dihapus!");
         }
